@@ -1,9 +1,10 @@
-numpy
-pandas
-scikit-learn
-tensorflow
-adaptive
-truelearn
-django
-matplotlib 
-seaborn
+# numpy
+# pandas
+# scikit-learn
+# tensorflow
+# adaptive
+# truelearn
+# django
+# matplotlib 
+# seaborn
+# sqlalchemy
