@@ -6,9 +6,9 @@
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="login-body">
     <div class="form">
-        <h2 class="center">Register</h2>
+        <h2 class="center">PLS Register</h2>
         <form method="POST" action="{{ url_for('register') }}">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -28,6 +28,10 @@
             <br>
             <button type="submit">Register</button>
         </form>
+        <div class="center">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
     </div>
+    
 </body>
 </html>

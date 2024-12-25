@@ -37,12 +37,12 @@ def register():
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return "Welcome to the dashboard!"
+    return render_template('dashboard.html')
 
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return redirect(url_for('login'))
+    return home()
 
 if __name__ == "__main__":
     app.run(debug=True)

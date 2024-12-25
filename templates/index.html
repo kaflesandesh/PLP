@@ -5,33 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Learning System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <nav>
         <div class="nav-wrapper">
             <a href="#" class="brand-logo">PLS</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                {% if session.get('user_id') %}
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
-                {% endif %}
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul id="nav-links" class="nav-links">
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
             </ul>
         </div>
     </nav>
+
     <div class="container">
         <h1>Welcome to the Personalized Learning System</h1>
         <p>This system provides a personalized learning experience for students, instructors, and administrators.</p>
-        <p>Features include:</p>
-        <ul>
-            <li>User Management: Handles students, instructors, and admin users.</li>
-            <li>Course Management: Manages course creation, enrollment, and content.</li>
-            <li>Learning Material: Handles access to learning materials and assignment submissions.</li>
-            <li>Feedback and Progress: Manages student progress tracking and feedback.</li>
-            <li>System Utilities: Includes reporting, bug tracking, and system maintenance.</li>
-        </ul>
+        <p class="bold-center">Features Include</p>     
+        <div class="feature-container">                   
+            <div class="feature-item">User Management: Handles students, instructors, and admin users.</div>
+            <div class="feature-item">Course Management: Manages course creation, enrollment, and content.</div>
+            <div class="feature-item">Learning Material: Handles access to learning materials and assignment submissions.</div>
+            <div class="feature-item">Feedback and Progress: Manages student progress tracking and feedback.</div>
+            <div class="feature-item">System Utilities: Includes reporting, bug tracking, and system maintenance.</div>
+        </div>
     </div>
+
 </body>
 </html>
