@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Progress</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -17,11 +17,6 @@
             <ul id="nav-links" class="nav-links">
                 {% if session.get('user_id') %}
                     <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
-                    <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
-                    <li><a href="{{ url_for('progress') }}">Progress</a></li>
-                    <li><a href="{{ url_for('materials') }}">Materials</a></li>
-                    <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
@@ -32,16 +27,8 @@
     </nav>
 
     <div class="container">
-        <h3>Welcome to your Dashboard</h3>
-        <p>Here you can manage your courses, view progress, and access learning materials.</p>
-        <p>Features available to you:</p>
-        <div class="feature-container">
-            <div class="feature-item">Manage your courses</div>
-            <div class="feature-item">View and submit assignments</div>
-            <div class="feature-item">Track your progress</div>
-            <div class="feature-item">Access learning materials</div>
-            <div class="feature-item">Provide and receive feedback</div>
-        </div>
+        <h3>Progress</h3>
+        <p>Here you can track your progress.</p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

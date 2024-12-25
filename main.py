@@ -39,10 +39,40 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
+@app.route('/courses')
+def courses():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('courses.html')
+
+@app.route('/assignments')
+def assignments():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('assignments.html')
+
+@app.route('/progress')
+def progress():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('progress.html')
+
+@app.route('/materials')
+def materials():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('materials.html')
+
+@app.route('/feedback')
+def feedback():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('feedback.html')
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return home()
+    return redirect(url_for('feedback'))
 
 if __name__ == "__main__":
     app.run(debug=True)
