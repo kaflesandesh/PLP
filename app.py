@@ -11,25 +11,30 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
-        if system.login_user(email=email, password=password):
-            user_id = system.get_user_id(email)
+        if system.login_user(username=username, password=password):
+            user_id = system.get_user_id(username)
             session['user_id'] = user_id
             return redirect(url_for('dashboard'))
         else:
-            return "Login failed. Please check your credentials."
-    return render_template('login.html')
+            error = "Login failed. Please check your credentials."
+    return render_template('login.html', error=error)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form['name']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        middle_name = request.form['middle_name']
+        dob = request.form['dob']
+        address = request.form['address']
         email = request.form['email']
+        phone = request.form['phone']
         password = request.form['password']
-        user_type = request.form['user_type']
-        system.register_user(name=name, email=email, password=password, user_type=user_type)
+        system.register_user(first_name, last_name, middle_name, dob, address, email, phone, password)
         return redirect(url_for('login'))
     return render_template('register.html')
 

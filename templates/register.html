@@ -4,29 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-reg.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reg.css') }}">
     <script src="{{ url_for('static', filename='script/login-reg.js') }}"></script>
 </head>
-<body class="login-body">
-    <div class="form">
+<body class="reg-body">
+    <div class="reg-form">
         <h2 class="center">PLS Register</h2>
         <form method="POST" action="{{ url_for('register') }}">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-            <label for="email">Email:</label>
+
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" required>
+       
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" required>
+        
+            <label for="middle_name">Middle Name</label>
+            <input type="text" id="middle_name" name="middle_name">
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required>
+            
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
-            <br>
-            <label for="password">Password:</label>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            <br>
-            <label for="user_type">User Type:</label>
+            
+            <label for="major">Major</label>
+            <select id="major" class="option" name="major" required>
+                <option value="" disabled selected>Select your major</option>
+                <option value="computer_science">Computer Science</option>
+                <option value="engineering">Engineering</option>
+                <option value="business">Business</option>
+                <option value="arts">Arts</option>
+                <option value="science">Science</option>
+                <option value="not_applicable">Not Applicable</option>
+            </select>
+
+            <label for="user_type">You are a </label>
             <select id="user_type" class="option" name="user_type" required>
+                <option value="" disabled selected>Select your option</option>
                 <option value="student">Student</option>
                 <option value="instructor">Instructor</option>
                 <option value="admin">Admin</option>
             </select>
-            <br>
+            <input type="checkbox" id="confirm" name="confirm" required>
+            <label for="confirm">I confirm that the provided information is correct and I will be responsible if it is not.</label>
             <button type="submit">Register</button>
         </form>
         <div class="center">

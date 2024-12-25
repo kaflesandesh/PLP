@@ -71,3 +71,11 @@ button {
 button:hover {
     background: #1d62d1;
 }
+
+.error-message{
+    color: red;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+}
