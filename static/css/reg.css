@@ -89,13 +89,18 @@ form button:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-    form {
-        grid-template-columns: 1fr; /* Change to single column layout */
+@media (max-width: 900px) {
+    .reg-form {
+        width: 90%; /* Adjust form width for smaller screens */
+        grid-template-columns: (2, 1fr); /* Change to single column layout */
     }
 
-    form label, form input, form select, form button, .center p {
-        grid-column: span 1; /* Occupy full width */
+    .reg-form label, .reg-form input, .reg-form select, .reg-form button, .reg-form .center p {
+    grid-column: span 1; /* Occupy full width */
+    }
+
+    form {
+        gap: 10px; /* Reduce gap for smaller screens */
     }
 }
 
