@@ -1,0 +1,145 @@
+<style>
+    /* Chatbot CSS */
+    #chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none; /* Hidden initially */
+        flex-direction: column;
+    }
+    
+    #chatbot-header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    #chatbot-body {
+        padding: 10px;
+    }
+    
+    #chatbot-messages {
+        height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 5px;
+        background: #fff;
+        border-radius: 5px;
+    }
+    
+    #chatbot-input {
+        width: 75%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    #chatbot-send {
+        width: 15%;
+        padding: 5px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    
+    #chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #007bff;
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+</style>
+    
+    <!-- Chatbot Icon -->
+<div id="chatbot-icon" onclick="toggleChatbot()">💬</div>
+
+<!-- Chatbot Widget -->
+<div id="chatbot-container">
+    <div id="chatbot-header">
+        How can I help you?
+        <button onclick="toggleChatbot()">❌</button>
+    </div>
+    <div id="chatbot-body">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Type your message..." />
+        <button id="chatbot-send">Send</button>
+    </div>
+</div>
+
+<!-- Chatbot Script -->
+<script>
+    // Toggle the visibility of the chatbot
+    function toggleChatbot() {
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const chatbotIcon = document.getElementById('chatbot-icon');
+        if (chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '') {
+            chatbotContainer.style.display = 'flex'; // Show the chatbot
+            chatbotIcon.style.display = 'none'; // Hide the icon when chatbot is open
+        } else {
+            chatbotContainer.style.display = 'none'; // Hide the chatbot
+            chatbotIcon.style.display = 'block'; // Show the icon when chatbot is closed
+        }
+    }
+
+    // Send message on button click
+    document.getElementById('chatbot-send').addEventListener('click', function() {
+        const input = document.getElementById('chatbot-input');
+        const message = input.value;
+        if (message.trim() !== '') {
+            addMessageToChat('You', message);
+            input.value = '';
+            sendMessageToServer(message);
+        }
+    });
+
+    // Function to add messages to the chat
+    function addMessageToChat(sender, message) {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `${sender}: ${message}`;
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Function to send message to the server
+    function sendMessageToServer(message) {
+        fetch('/chatbot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            addMessageToChat('Bot', data.reply);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessageToChat('Bot', 'Sorry, something went wrong.');
+        });
+    }
+</script>

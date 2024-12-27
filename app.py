@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from back.system_utilities.login import LoginSystem
+from transformers import pipeline
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -78,6 +80,27 @@ def feedback():
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('home'))
+
+
+# Load the small LLM (Flan-T5)
+chatbot_model = pipeline("text2text-generation", model="google/flan-t5-small")
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    user_message = request.json.get("message", "")
+    user_id = session.get("user_id", None)
+
+    # Determine user type for personalized response
+    user_type = "guest"
+    if user_id:
+        # Replace with actual logic to fetch user type
+        user_type = "student"  # Or "instructor", "admin"
+
+    # Generate AI response
+    context = f"You are assisting a {user_type}. "
+    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1)
+    reply = response[0]['generated_text']
+
+    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
     app.run(debug=True)

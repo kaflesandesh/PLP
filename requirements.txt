@@ -10,3 +10,5 @@
 # sqlalchemy
 # Flask
 # Werkzeug
+# torch
+# tf-keras

@@ -41,3 +41,14 @@
     </script>
 </body>
 </html>
+
+{% extends "base.html" %}
+
+{% block content %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+    </script>
+{% endblock %}
