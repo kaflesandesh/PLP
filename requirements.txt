@@ -12,3 +12,4 @@
 # Werkzeug
 # torch
 # tf-keras
+# flask_sqlalchemy
