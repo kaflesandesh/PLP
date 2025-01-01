@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for, flash
-from back.system_utilities.user import user_bp
+from back.system_utilities.user import login_required, user_bp
+from back.course import course_bp
 from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
 from transformers import pipeline
-from functools import wraps
 from datetime import timedelta, datetime
 
 app = Flask(__name__)
@@ -12,8 +12,9 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=3)
 # Load the small LLM (Flan-T5)
 chatbot_model = pipeline("text2text-generation", model="google/flan-t5-small")
 
-# Register the user blueprint
+# Register the blueprints
 app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(course_bp, url_prefix='/course')
 
 # Create database tables if they do not exist
 create_tables_if_not_exist()
@@ -21,15 +22,6 @@ create_tables_if_not_exist()
 @app.context_processor
 def inject_user():
     return dict(username=session.get('username', 'Guest'))
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('You need to be logged in to view this page.', 'warning')
-            return redirect(url_for('user.login')) 
-        return f(*args, **kwargs)
-    return decorated_function
 
 @app.before_request
 def make_session_permanent():
@@ -58,11 +50,10 @@ def home():
 def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/courses')
+@app.route('/course/courses')
 @login_required
 def courses():
-    user_type = session.get('user_type', 'guest')
-    return render_template('courses.html', user_type=user_type)
+    return render_template('courses.html')
 
 @app.route('/assignments')
 @login_required

@@ -15,6 +15,23 @@ class User(Base):
     password = Column(String)
     type = Column(String)
 
+class Course(Base):
+    __tablename__ = 'courses'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    instructor_id = Column(Integer, ForeignKey('users.id'))
+    instructor = relationship('User')
+    enrollments = relationship('Enrollment', back_populates='course')
+
+class Enrollment(Base):
+    __tablename__ = 'enrollments'
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey('users.id'))
+    course_id = Column(Integer, ForeignKey('courses.id'))
+    status = Column(String, default='pending')
+    student = relationship('User')
+    course = relationship('Course', back_populates='enrollments')
+
 class UserInformation(Base):
     __tablename__ = 'user_information'
     id = Column(Integer, primary_key=True, index=True)

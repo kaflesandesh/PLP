@@ -1,11 +1,21 @@
+from functools import wraps
 import random
-from flask import Blueprint, redirect, request, jsonify, session, render_template, url_for
+from flask import Blueprint, flash, redirect, request, jsonify, session, render_template, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from back.system_utilities.dbmanage import User, UserInformation, get_db, Log
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 
 user_bp = Blueprint('user', __name__)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('You need to be logged in to view this page.', 'warning')
+            return redirect(url_for('user.login')) 
+        return f(*args, **kwargs)
+    return decorated_function
 
 def log_activity(db, user_id, activity_type, message):
     """
