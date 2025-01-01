@@ -13,6 +13,7 @@
     <nav>
         <div class="nav-wrapper">
             <a href="#" class="brand-logo">PLS</a>
+            <b>{{ username }}</b>
             <button class="menu-toggle" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
@@ -21,8 +22,8 @@
                     <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    <li><a href="{{ url_for('user.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('user.register') }}">Register</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -30,7 +31,51 @@
 
     <div class="container">
         <h3>Courses</h3>
-        <p>Here you can manage your courses.</p>
+
+        <!-- For Instructor: Course Creation -->
+        {% if user_type == 'instructor' %}
+        <h4>Create a New Course</h4>
+        <form action="{{ url_for('create_course') }}" method="POST">
+            <input type="text" name="course_name" placeholder="Course Name" required>
+            <button type="submit">Add Course</button>
+        </form>
+        {% endif %}
+
+        <!-- List Courses -->
+        <h4>Your Courses</h4>
+        <ul>
+            {% for course in courses %}
+            <li>
+                <strong>{{ course.name }}</strong> (Instructor: {{ course.instructor }})
+                <ul>
+                    <li>Students Enrolled: {{ course.student_count }}</li>
+                    <li>
+                        <a href="{{ url_for('view_course', course_id=course.id) }}">View Details</a>
+                        {% if user_type == 'instructor' %}
+                        | <a href="{{ url_for('edit_course', course_id=course.id) }}">Edit</a>
+                        | <a href="{{ url_for('delete_course', course_id=course.id) }}">Delete</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- For Students: Request Enrollment -->
+        {% if user_type == 'student' %}
+        <h4>Available Courses</h4>
+        <ul>
+            {% for course in available_courses %}
+            <li>
+                <strong>{{ course.name }}</strong> (Instructor: {{ course.instructor }})
+                <form action="{{ url_for('request_course') }}" method="POST">
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
+                    <button type="submit">Request Enrollment</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 </body>
 </html>

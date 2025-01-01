@@ -1,79 +1,87 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from back.system_utilities.login import LoginSystem
+from flask import Flask, request, jsonify, session, render_template, redirect, url_for, flash
+from back.system_utilities.user import user_bp
+from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
 from transformers import pipeline
-from flask import jsonify
+from functools import wraps
+from datetime import timedelta, datetime
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-system = LoginSystem()
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=3) 
+
+# Load the small LLM (Flan-T5)
+chatbot_model = pipeline("text2text-generation", model="google/flan-t5-small")
+
+# Register the user blueprint
+app.register_blueprint(user_bp, url_prefix='/user')
+
+# Create database tables if they do not exist
+create_tables_if_not_exist()
+
+@app.context_processor
+def inject_user():
+    return dict(username=session.get('username', 'Guest'))
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('You need to be logged in to view this page.', 'warning')
+            return redirect(url_for('user.login')) 
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    session.modified = True
+    session['last_activity'] = datetime.utcnow()
+
+@app.before_request
+def check_inactivity():
+    last_activity = session.get('last_activity')
+    if last_activity:
+        now = datetime.utcnow()
+        if (now - last_activity).total_seconds() > app.config['PERMANENT_SESSION_LIFETIME'].total_seconds():
+            session.clear()
+            flash('You have been logged out due to inactivity.', 'warning')
+            return redirect(url_for('user.login'))
 
 @app.route('/')
 def home():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if system.login_user(username=username, password=password):
-            user_id = system.get_user_id(username)
-            session['user_id'] = user_id
-            return redirect(url_for('dashboard'))
-        else:
-            error = "Login failed. Please check your credentials."
-    return render_template('login.html', error=error)
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        middle_name = request.form['middle_name']
-        dob = request.form['dob']
-        address = request.form['address']
-        email = request.form['email']
-        phone = request.form['phone']
-        password = request.form['password']
-        system.register_user(first_name, last_name, middle_name, dob, address, email, phone, password)
-        return redirect(url_for('login'))
-    return render_template('register.html')
-
 @app.route('/dashboard')
+@login_required
 def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
     return render_template('dashboard.html')
 
 @app.route('/courses')
+@login_required
 def courses():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('courses.html')
+    user_type = session.get('user_type', 'guest')
+    return render_template('courses.html', user_type=user_type)
 
 @app.route('/assignments')
+@login_required
 def assignments():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
     return render_template('assignments.html')
 
 @app.route('/progress')
+@login_required
 def progress():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
     return render_template('progress.html')
 
 @app.route('/materials')
+@login_required
 def materials():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
     return render_template('materials.html')
 
 @app.route('/feedback')
+@login_required
 def feedback():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
     return render_template('feedback.html')
 
 @app.route('/logout')
@@ -81,24 +89,22 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('home'))
 
-
-# Load the small LLM (Flan-T5)
-chatbot_model = pipeline("text2text-generation", model="google/flan-t5-small")
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
     user_message = request.json.get("message", "")
     user_id = session.get("user_id", None)
 
-    # Determine user type for personalized response
     user_type = "guest"
+    db = next(get_db())
     if user_id:
-        # Replace with actual logic to fetch user type
-        user_type = "student"  # Or "instructor", "admin"
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            user_type = user.type
 
-    # Generate AI response
     context = f"You are assisting a {user_type}. "
-    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1)
+    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1, clean_up_tokenization_spaces=True)
     reply = response[0]['generated_text']
+    db.close()
 
     return jsonify({"reply": reply})
 

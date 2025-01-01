@@ -13,3 +13,4 @@
 # torch
 # tf-keras
 # flask_sqlalchemy
+# bcrypt

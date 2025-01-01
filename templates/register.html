@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reg.css') }}">
-    <script src="{{ url_for('static', filename='script/login-reg.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/reg.js') }}"></script>
 </head>
 <body class="reg-body">
     <div class="reg-form">
         <h2 class="center">PLS Register</h2>
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('user.register') }}">
 
             <label for="first_name">First Name</label>
             <input type="text" id="first_name" name="first_name" required>
        
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" required>
-        
             <label for="middle_name">Middle Name</label>
             <input type="text" id="middle_name" name="middle_name">
 
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" required>
+        
             <label for="dob">Date of Birth</label>
             <input type="date" id="dob" name="dob" required>
             
@@ -52,14 +52,13 @@
                 <option value="" disabled selected>Select your option</option>
                 <option value="student">Student</option>
                 <option value="instructor">Instructor</option>
-                <option value="admin">Admin</option>
             </select>
             <input type="checkbox" id="confirm" name="confirm" required>
             <label for="confirm">I confirm that the provided information is correct and I will be responsible if it is not.</label>
             <button type="submit">Register</button>
         </form>
         <div class="center">
-            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('home') }}">Go back</a></p>
+            <p>Already have an account? <a href="{{ url_for('user.login') }}">Login</a> or <a href="{{ url_for('home') }}">Go back</a></p>
         </div>
     </div>
     

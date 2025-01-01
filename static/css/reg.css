@@ -4,19 +4,21 @@
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start; /* Align content to the top */
+    min-height: 100vh; /* Ensures body takes full viewport height */
     background: linear-gradient(to right, #6a11cb, #2575fc);
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .reg-form {
     background: white;
-    padding: 10px 15px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 800px;
-    height: fit-content;
+    max-width: 600px; /* Increased maximum width for a wider form */
+    height: auto; /* Let the form height adjust based on its content */
+    overflow: visible; /* Ensure no content is hidden */
 }
 
 h2.center {
@@ -28,35 +30,34 @@ h2.center {
 
 form {
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* Create three equal columns */
-    gap: 20px; /* Add spacing between rows and columns */
+    grid-template-columns: repeat(2, 1fr); /* Display two inputs per row */
+    gap: 20px;
 }
 
 form label {
-    grid-column: span 1; /* Labels occupy one column */
     font-size: 0.9em;
     color: #555;
-    align-self: center;
     font-weight: bold;
 }
 
-form input, form select {
-    grid-column: span 2; /* Inputs and select fields span two columns */
+form input,
+form select {
     padding: 10px;
     font-size: 1em;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+    width: 100%; /* Make inputs and selects take full width */
 }
 
-form input:focus, form select:focus {
+form input:focus,
+form select:focus {
     outline: none;
     border-color: #2575fc;
     box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
 }
 
 form button {
-    grid-column: span 1; /* Button spans all three columns */
     padding: 12px;
     background: #2575fc;
     color: white;
@@ -65,6 +66,7 @@ form button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    grid-column: span 2; /* Make the button span across both columns */
 }
 
 form button:hover {
@@ -72,7 +74,6 @@ form button:hover {
 }
 
 .center p {
-    grid-column: span 3; /* Center-align text spans all three columns */
     text-align: center;
     margin-top: 20px;
     font-size: 0.9em;
@@ -89,51 +90,77 @@ form button:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
     .reg-form {
-        width: 90%; /* Adjust form width for smaller screens */
-        grid-template-columns: (2, 1fr); /* Change to single column layout */
+        width: 90%;
+        padding: 15px;
     }
-
-    .reg-form label, .reg-form input, .reg-form select, .reg-form button, .reg-form .center p {
-    grid-column: span 1; /* Occupy full width */
-    }
-
     form {
-        gap: 10px; /* Reduce gap for smaller screens */
+        grid-template-columns: 1fr; /* Stack inputs in a single column */
+        gap: 10px;
+    }
+
+    form input,
+    form select {
+        padding: 8px;
+        font-size: 0.95em;
+    }
+
+    form button {
+        padding: 10px;
+    }
+
+    .center p {
+        font-size: 0.8em;
     }
 }
 
 form input[type="checkbox"] {
-    grid-column: span 1; /* Aligns with the layout */
-    align-self: center;
-    justify-self: start;
-    transform: scale(1.2); /* Slightly enlarges the checkbox for better visibility */
-    margin-left: 90%;
+    margin-left: 10px;
+    transform: scale(1.2);
 }
 
 form label[for="confirm"] {
-    grid-column: span 5; /* Makes the label span across the form width */
     font-size: 0.9em;
     color: #555;
-    align-self: center;
-    line-height: 1.4; /* Adds spacing for better readability */
+    line-height: 1.4;
     font-weight: normal;
-    text-align: left;
 }
 
 form label[for="confirm"]:hover {
-    color: #2575fc; /* Adds a hover effect for better interaction */
+    color: #2575fc;
 }
 
-.confirm-section {
-    display: flex;
-    align-items: center;
-    grid-column: span 6; /* Ensures the entire row is used for the confirmation */
+.error-messages {
+    color: red;
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 10px;
 }
 
-.confirm-section input[type="checkbox"] {
-    margin-right: 10px;
+/* Extra Small Devices */
+@media (max-width: 480px) {
+    h2.center {
+        font-size: 1.3em;
+    }
+
+    .reg-form {
+        width: 100%;
+        padding: 10px;
+    }
+
+    form {
+        gap: 8px;
+    }
+
+    form input,
+    form select {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    form button {
+        padding: 10px;
+        font-size: 0.9em;
+    }
 }
-
-
