@@ -79,26 +79,30 @@ def courses():
     
     return render_template('courses.html', courses=courses, available_courses=available_courses, user_type=user_type)
 
-@course_bp.route('/edit_course/<int:course_id>', methods=['GET', 'POST'])
+@course_bp.route('/edit_course/<int:course_id>', methods=['POST'])
 @login_required
 def edit_course(course_id):
     db = next(get_db())
     course = db.query(Course).filter(Course.id == course_id).first()
-    
-    if request.method == 'POST':
-        if session['user_type'] != 'instructor':
-            flash('Only instructors can edit courses.', 'warning')
-            return redirect(url_for('course.courses'))
-        
-        course.name = request.form['course_name']
-        db.commit()
-        db.close()
-        
-        flash('Course updated successfully!', 'success')
+
+    if session['user_type'] != 'instructor':
+        flash('Only instructors can edit courses.', 'warning')
         return redirect(url_for('course.courses'))
-    
+
+    new_course_name = request.form['course_name']
+    existing_course = db.query(Course).filter(Course.name == new_course_name).first()
+
+    if existing_course and existing_course.id != course_id:
+        flash('Course name already exists.', 'danger')
+        db.close()
+        return redirect(url_for('course.courses'))
+
+    course.name = new_course_name
+    db.commit()
     db.close()
-    return render_template('edit_course.html', course=course)
+
+    flash('Course updated successfully!', 'success')
+    return redirect(url_for('course.courses'))
 
 @course_bp.route('/delete_course/<int:course_id>', methods=['POST'])
 @login_required

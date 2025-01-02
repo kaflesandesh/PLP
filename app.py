@@ -93,7 +93,7 @@ def chatbot():
             user_type = user.type
 
     context = f"You are assisting a {user_type}. "
-    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1, clean_up_tokenization_spaces=True)
+    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1)
     reply = response[0]['generated_text']
     db.close()
 
