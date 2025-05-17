@@ -5,7 +5,7 @@ python -m venv venv
 venv\Scripts\activate
 ## On mac os, use >> source venv/bin/activate
 
-## Install dependencies (uncomment if the lines are commented or add dependencies to the file and re-run the following line)
+## Install dependencies (uncomment if the lines are commented or add dependencies to the file and re-run the following line)/ or add of your need
 pip install -r requirements.txt
 
 ## To run app 
