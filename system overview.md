@@ -50,7 +50,7 @@ A personalized educational platform for rural students, enabling interactive lea
 - **Authentication:** Role-based (`login.py`)
 - **Database:**  
     - Tables: users, courses, enrollments, materials, assignments, feedback, progress  
-    - ORM: SQLAlchemy/Flask-SQLAlchemy
+    - ORM: SQLAlchemy/Flask-SQLAlchemy (or other)
 - **Modules:**  
     - User management (`user.py`, `admin.py`, `instructor.py`, `student.py`)  
     - Course/materials (`course.py`, `learning-material.py`)  
@@ -65,14 +65,14 @@ A personalized educational platform for rural students, enabling interactive lea
 
 ### Phase 3: AI-Powered Features
 - **LLM Integration:**  
-    - Open-source/free-tier LLMs (e.g., Hugging Face, OpenAI)  
+    - Open-source/free-tier LLMs (e.g., Hugging Face, OpenAI, LocalLLMs)  
     - Chatbot, AI grading, content generation
 - **Deployment:** Cloud hosting for LLM APIs
 
 ### Phase 4: Testing & Deployment
 - **Testing:** Unit/integration tests, beta feedback
 - **Deployment:**  
-    - Cloud hosting (AWS, Azure, Heroku)  
+    - Cloud hosting (AWS, Azure, Heroku)  | or local server 
     - Reverse proxy (Nginx/Apache)  
     - SSL for security
 
