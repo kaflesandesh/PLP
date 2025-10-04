@@ -1,16 +1,17 @@
-# numpy
-# pandas
-# scikit-learn
-# tensorflow
-# adaptive
-# truelearn
-# django
-# matplotlib 
-# seaborn
-# sqlalchemy
-# Flask
-# Werkzeug
-# torch
-# tf-keras
-# flask_sqlalchemy
-# bcrypt
+numpy
+pandas
+scikit-learn
+tensorflow
+adaptive
+truelearn
+django
+matplotlib 
+seaborn
+sqlalchemy
+Flask
+Werkzeug
+torch
+tf-keras
+flask_sqlalchemy
+bcrypt
+langchain_ollama

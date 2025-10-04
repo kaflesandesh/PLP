@@ -79,7 +79,7 @@
 <!-- Chatbot Widget -->
 <div id="chatbot-container">
     <div id="chatbot-header">
-        How can I help you?
+        Ask AI for Help
         <button onclick="toggleChatbot()">❌</button>
     </div>
     <div id="chatbot-body">
@@ -95,9 +95,11 @@
     function toggleChatbot() {
         const chatbotContainer = document.getElementById('chatbot-container');
         const chatbotIcon = document.getElementById('chatbot-icon');
+        const messagesContainer = document.getElementById('chatbot-messages');
         if (chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '') {
             chatbotContainer.style.display = 'flex'; // Show the chatbot
             chatbotIcon.style.display = 'none'; // Hide the icon when chatbot is open
+            messagesContainer.innerHTML = ''; // Clear previous chat
         } else {
             chatbotContainer.style.display = 'none'; // Hide the chatbot
             chatbotIcon.style.display = 'block'; // Show the icon when chatbot is closed

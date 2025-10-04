@@ -2,15 +2,12 @@ from flask import Flask, request, jsonify, session, render_template, redirect, u
 from back.system_utilities.user import login_required, user_bp
 from back.course import course_bp
 from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
-from transformers import pipeline
 from datetime import timedelta, datetime
+from langchain_ollama import OllamaLLM
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=3) 
-
-# Load the small LLM (Flan-T5)
-chatbot_model = pipeline("text2text-generation", model="google/flan-t5-small")
 
 # Register the blueprints
 app.register_blueprint(user_bp, url_prefix='/user')
@@ -18,6 +15,9 @@ app.register_blueprint(course_bp, url_prefix='/course')
 
 # Create database tables if they do not exist
 create_tables_if_not_exist()
+
+# Initialize the Ollama LLM
+llm = OllamaLLM(model="gemma3:4b", temperature=0.7)
 
 @app.context_processor
 def inject_user():
@@ -92,9 +92,9 @@ def chatbot():
         if user:
             user_type = user.type
 
-    context = f"You are assisting a {user_type}. "
-    response = chatbot_model(context + user_message, max_length=100, num_return_sequences=1)
-    reply = response[0]['generated_text']
+    context = f"You are assisting a {user_type}. Plese provide helpful and concise responses. Don't mention you are an AI model. Don't respond longer than 100 words."
+    response = llm.invoke(context + user_message)
+    reply = response
     db.close()
 
     return jsonify({"reply": reply})
