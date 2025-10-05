@@ -1,9 +1,10 @@
+from datetime import timedelta, datetime, timezone
 from langchain_ollama import OllamaLLM
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for, flash
-from datetime import timedelta, datetime
 from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
 from back.system_utilities.user import login_required, user_bp
 from back.course import course_bp
+from back.chatbot import chatbot_bp
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -12,6 +13,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=3)
 # Register the blueprints
 app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(course_bp, url_prefix='/course')
+app.register_blueprint(chatbot_bp, url_prefix='/chatbot')
 
 # Create database tables if they do not exist
 create_tables_if_not_exist()
@@ -27,18 +29,18 @@ def inject_user():
 def make_session_permanent():
     session.permanent = True
     session.modified = True
-    session['last_activity'] = datetime.utcnow()
+    session['last_activity'] = datetime.now(timezone.utc)
 
 @app.before_request
 def check_inactivity():
     last_activity = session.get('last_activity')
     if last_activity:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if (now - last_activity).total_seconds() > app.config['PERMANENT_SESSION_LIFETIME'].total_seconds():
             session.clear()
             flash('You have been logged out due to inactivity.', 'warning')
             return redirect(url_for('user.login'))
-
+        
 @app.route('/')
 def home():
     if 'user_id' in session:
@@ -75,30 +77,14 @@ def materials():
 def feedback():
     return render_template('feedback.html')
 
+@app.route("/chatbot")
+def chatbot():
+    return render_template("base.html")
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('home'))
-
-@app.route("/chatbot", methods=["POST"])
-def chatbot():
-    user_message = request.json.get("message", "")
-    user_id = session.get("user_id", None)
-
-    user_type = "guest"
-    db = next(get_db())
-    if user_id:
-        user = db.query(User).filter(User.id == user_id).first()
-        if user:
-            user_type = user.type
-
-    context = f"You are assisting a {user_type}. Plese provide helpful and concise responses. Don't mention you are an AI model. Don't respond longer than 100 words."
-    response = llm.invoke(context + user_message)
-    response = response.replace("*", "").strip()
-    reply = response
-    db.close()
-
-    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
     app.run(debug=True)

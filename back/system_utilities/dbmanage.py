@@ -2,6 +2,8 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date,
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import Text, DateTime
+from datetime import datetime
 
 Base = declarative_base()
 metadata = MetaData()
@@ -14,6 +16,9 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     password = Column(String)
     type = Column(String)
+    
+    # Add this inside the User class to define the chat history relationship
+    chat_history = relationship("ChatHistory", order_by="ChatHistory.timestamp", back_populates="user")
 
 class Course(Base):
     __tablename__ = 'courses'
@@ -53,6 +58,15 @@ class Log(Base):
     action = Column(String)
     message = Column(String)
     user = relationship("User")
+
+class ChatHistory(Base):
+    __tablename__ = 'chat_history'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    message = Column(Text, nullable=False)
+    is_user = Column(Integer, default=1)  # 1 if user message, 0 if AI tutor response
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    user = relationship("User", back_populates="chat_history")
 
 def get_db():
     db = SessionLocal()
