@@ -1,9 +1,9 @@
+from langchain_ollama import OllamaLLM
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for, flash
+from datetime import timedelta, datetime
+from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
 from back.system_utilities.user import login_required, user_bp
 from back.course import course_bp
-from back.system_utilities.dbmanage import User, create_tables_if_not_exist, get_db
-from datetime import timedelta, datetime
-from langchain_ollama import OllamaLLM
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -94,6 +94,7 @@ def chatbot():
 
     context = f"You are assisting a {user_type}. Plese provide helpful and concise responses. Don't mention you are an AI model. Don't respond longer than 100 words."
     response = llm.invoke(context + user_message)
+    response = response.replace("*", "").strip()
     reply = response
     db.close()
 
